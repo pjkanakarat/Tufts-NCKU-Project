@@ -1,0 +1,8 @@
+C:\Users\nckuee\Documents\MCUXpressoIDE_24.12.148\workspace\MCP4822_FINAL\CMSIS/core_cm0plus.h:757:22:__NVIC_EnableIRQ	16	static
+C:\Users\nckuee\Documents\MCUXpressoIDE_24.12.148\workspace\MCP4822_FINAL\CMSIS/core_cm0plus.h:795:22:__NVIC_DisableIRQ	16	static
+../drivers/fsl_common_arm.h:667:24:EnableIRQ	24	static
+../drivers/fsl_common_arm.h:717:24:DisableIRQ	24	static
+../drivers/fsl_common_arm.c:84:6:EnableDeepSleepIRQ	24	static
+../drivers/fsl_common_arm.c:100:6:DisableDeepSleepIRQ	24	static
+../drivers/fsl_common_arm.c:175:13:DelayLoop	16	static
+../drivers/fsl_common_arm.c:205:6:SDK_DelayAtLeastUs	40	static

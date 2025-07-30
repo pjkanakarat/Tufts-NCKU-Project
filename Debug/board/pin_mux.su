@@ -1,0 +1,4 @@
+C:\Users\nckuee\Documents\MCUXpressoIDE_24.12.148\workspace\MCP4822_FINAL\drivers/fsl_clock.h:564:20:CLOCK_EnableClock	24	static
+C:\Users\nckuee\Documents\MCUXpressoIDE_24.12.148\workspace\MCP4822_FINAL\drivers/fsl_iocon.h:182:22:IOCON_PinMuxSet	32	static
+../board/pin_mux.c:37:6:BOARD_InitBootPins	8	static
+../board/pin_mux.c:66:6:BOARD_InitPins	48	static
