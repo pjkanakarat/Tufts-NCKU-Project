@@ -159,6 +159,24 @@ void BOARD_InitPins(void) { /* Function assigned for the Cortex-M0P */
   );
   IOCON_PinMuxSet(IOCON, 1U, 1U, port1_pin1_config); /* PORT1 PIN1 (FC5_SSEL2) */
 }
+
+void BOARD_InitSecureMCUPins(void) { /* Function assigned for the Cortex-M0P */
+  CLOCK_EnableClock(kCLOCK_Iocon);                           /* Enables the clock for the IOCON block. 0 = Disable; 1 = Enable.: 0x01u */
+
+  IOCON->PIO[0][25] = ((IOCON->PIO[0][25] &
+    (~(IOCON_PIO_FUNC_MASK | IOCON_PIO_I2CSLEW_MASK | IOCON_PIO_DIGIMODE_MASK))) /* Mask bits to zero which are setting */
+      | IOCON_PIO_FUNC(PIO025_FUNC_ALT1)                     /* Selects pin function.: PORT025 (pin 3) is configured as FC4_RTS_SCL_SSEL1 */
+      | IOCON_PIO_I2CSLEW(PIO025_I2CSLEW_I2C_MODE)           /* Controls slew rate of I2C pin.: I2C mode. */
+      | IOCON_PIO_DIGIMODE(PIO025_DIGIMODE_DIGITAL)          /* Select Analog/Digital mode.: Digital mode. */
+    );
+  IOCON->PIO[0][26] = ((IOCON->PIO[0][26] &
+    (~(IOCON_PIO_FUNC_MASK | IOCON_PIO_I2CSLEW_MASK | IOCON_PIO_DIGIMODE_MASK))) /* Mask bits to zero which are setting */
+      | IOCON_PIO_FUNC(PIO026_FUNC_ALT1)                     /* Selects pin function.: PORT026 (pin 4) is configured as FC4_CTS_SDA_SSEL0 */
+      | IOCON_PIO_I2CSLEW(PIO026_I2CSLEW_I2C_MODE)           /* Controls slew rate of I2C pin.: I2C mode. */
+      | IOCON_PIO_DIGIMODE(PIO026_DIGIMODE_DIGITAL)          /* Select Analog/Digital mode.: Digital mode. */
+    );
+}
+
 /* clang-format on */
 /***********************************************************************************************************************
  * EOF

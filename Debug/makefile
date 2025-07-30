@@ -31,7 +31,7 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := MCP4822_FINAL
+BUILD_ARTIFACT_NAME := alexsCode
 BUILD_ARTIFACT_EXTENSION := axf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
@@ -43,24 +43,24 @@ all:
 	+@$(MAKE) --no-print-directory main-build && $(MAKE) --no-print-directory post-build
 
 # Main-build Target
-main-build: MCP4822_FINAL.axf
+main-build: alexsCode.axf
 
 # Tool invocations
-MCP4822_FINAL.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
+alexsCode.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -Xlinker -no-warn-rwx-segments -Xlinker -Map="MCP4822_FINAL.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m0plus -mthumb -T MCP4822_FINAL_Debug.ld -o "MCP4822_FINAL.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -Xlinker -no-warn-rwx-segments -Xlinker -Map="alexsCode.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m0plus -mthumb -T alexsCode_Debug.ld -o "alexsCode.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) MCP4822_FINAL.axf
+	-$(RM) alexsCode.axf
 	-@echo ' '
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "MCP4822_FINAL.axf"; # arm-none-eabi-objcopy -v -O binary "MCP4822_FINAL.axf" "MCP4822_FINAL.bin" ; # checksum -p LPC51U68 -d "MCP4822_FINAL.bin";
+	-arm-none-eabi-size "alexsCode.axf"; # arm-none-eabi-objcopy -v -O binary "alexsCode.axf" "alexsCode.bin" ; # checksum -p LPC51U68 -d "alexsCode.bin";
 	-@echo ' '
 
 .PHONY: all clean dependents main-build post-build
