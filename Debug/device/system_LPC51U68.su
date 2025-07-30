@@ -1,0 +1,10 @@
+../device/system_LPC51U68.c:66:17:GetWdtOscFreq	16	static
+../device/system_LPC51U68.c:75:17:pllDecodeN	32	static
+../device/system_LPC51U68.c:113:17:pllDecodeP	32	static
+../device/system_LPC51U68.c:150:17:pllDecodeM	32	static
+../device/system_LPC51U68.c:188:17:findPllPreDiv	24	static
+../device/system_LPC51U68.c:207:17:findPllPostDiv	24	static
+../device/system_LPC51U68.c:226:17:findPllMMult	24	static
+../device/system_LPC51U68.c:256:6:SystemInit	8	static
+../device/system_LPC51U68.c:273:6:SystemCoreClockUpdate	88	static
+../device/system_LPC51U68.c:363:29:SystemInitHook	8	static
