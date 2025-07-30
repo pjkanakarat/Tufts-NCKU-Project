@@ -6,7 +6,7 @@
  * Generated linker script file for LPC51U68
  * Created from library.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v24.12 [Build 148] [2025-01-10] on Jul 30, 2025, 5:14:39 PM
+ * MCUXpresso IDE v24.12 [Build 148] [2025-01-10] on Jul 30, 2025, 7:00:20 PM
  */
 
 GROUP (

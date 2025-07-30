@@ -1,6 +1,9 @@
 C:\Users\eestaff\Documents\MCUXpressoIDE_24.12.148\workspace\alexsCode\drivers/fsl_gpio.h:153:20:GPIO_PinWrite	24	static
-../source/i2c_func.c:25:5:i2c_write	32	static
-../source/i2c_func.c:54:5:i2c_write_main	24	static
-../source/i2c_func.c:82:5:i2c_adc_config	16	static
-../source/i2c_func.c:104:5:i2c_adc_read	16	static
-../source/i2c_func.c:119:6:i2c_run	24	static
+../source/i2c_func.c:26:5:i2c_write	32	static
+../source/i2c_func.c:55:5:i2c_write_main	24	static
+../source/i2c_func.c:83:5:i2c_adc_config	16	static
+../source/i2c_func.c:105:5:i2c_adc_read	16	static
+../source/i2c_func.c:119:6:convert_adc	40	static
+../source/i2c_func.c:135:6:read_dac	32	static
+../source/i2c_func.c:152:6:read_temp	48	static
+../source/i2c_func.c:173:6:i2c_run	8	static
