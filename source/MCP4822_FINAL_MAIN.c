@@ -42,6 +42,5 @@ int main(void)
 
     PRINTF("\r\nEnd of I2C transfer.");
 
-    while (1) {
-    }
+    while (1) {}
 }

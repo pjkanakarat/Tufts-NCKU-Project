@@ -32,6 +32,7 @@
 int i2c_write(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start, uint32_t i_end);
 int i2c_write_main(status_t *status);
 void i2c_run();
+int i2c_adc_read(uint8_t * buf, int buf_size, status_t *status);
 int i2c_adc_config(uint8_t channel, status_t *status);
 void convert_adc(uint8_t * buf, int * volts_upper, int * microvolts);
 void read_dac();

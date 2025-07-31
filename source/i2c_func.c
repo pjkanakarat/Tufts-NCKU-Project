@@ -22,6 +22,9 @@ uint8_t adc_addr = 0x68;
 uint8_t adc_tx = 0b10001100 | CHANNEL_1; //RDY = 1, Channel = 00 (Placeholder), Conversation = 0, Sample Rate = 11, PGA = 00
 uint8_t dac_rx[4];
 uint8_t temp_rx[4];
+uint8_t config_dac_rx;
+uint8_t config_temp_rx;
+uint8_t config_rx;
 
 int i2c_write(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start, uint32_t i_end) {
     /* Send initial register config */
@@ -81,7 +84,7 @@ int i2c_write_main(status_t *status) {
 }
 
 int i2c_adc_config(uint8_t channel, status_t *status) {
-	PRINTF("Sending data to ADC Reg 0x%x...", adc_addr);
+	//PRINTF("Sending data to ADC Reg 0x%x...", adc_addr);
 	if (kStatus_Success == I2C_MasterStart(EXAMPLE_I2C_MASTER, adc_addr, kI2C_Write))
 	{
 		adc_tx &= ~(0b11 << 5);
@@ -97,14 +100,14 @@ int i2c_adc_config(uint8_t channel, status_t *status) {
 		PRINTF("Failed to start ADC I2C Connection\n");
 		return -1;
 	}
-	PRINTF("Success\r\n\r\n");
+	//PRINTF("Success\r\n\r\n");
 
 	return 0;
 }
 
-int i2c_adc_read(status_t *status) {
+int i2c_adc_read(uint8_t * buf, int buf_size, status_t *status) {
 	if (kStatus_Success == I2C_MasterStart(EXAMPLE_I2C_MASTER, adc_addr, kI2C_Read)) {
-		*status = I2C_MasterReadBlocking(EXAMPLE_I2C_MASTER, &dac_rx, 4, kI2C_TransferDefaultFlag);
+		*status = I2C_MasterReadBlocking(EXAMPLE_I2C_MASTER, buf, buf_size, kI2C_TransferDefaultFlag);
 		if (*status != kStatus_Success)
 		{
 			PRINTF("Data read failed 0x%x - ", *status);
@@ -137,16 +140,18 @@ void read_dac() {
 		PRINTF("Error during ADC transmission");
 	}
 
-	if (i2c_adc_read(&reVal) == -1) {
-		PRINTF("Error reading from ADC");
-	}
-	else {
-		PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", dac_rx[0], dac_rx[1], dac_rx[2], dac_rx[3]);
-		int volts_upper;
-		int microvolts;
-		convert_adc(dac_rx, &volts_upper, &microvolts);
-	    PRINTF("Voltage: %d.%06d V\n", volts_upper, microvolts);
-	}
+	do {
+		if (i2c_adc_read(dac_rx, 4, &reVal) == -1) {
+			PRINTF("Error reading from ADC");
+		}
+		SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+	} while (dac_rx[3] & 0x80);
+
+	PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", dac_rx[0], dac_rx[1], dac_rx[2], dac_rx[3]);
+	int volts_upper;
+	int microvolts;
+	convert_adc(dac_rx, &volts_upper, &microvolts);
+	PRINTF("Voltage: %d.%06d V\n", volts_upper, microvolts);
 }
 
 void read_temp() {
@@ -154,21 +159,30 @@ void read_temp() {
 		PRINTF("Error during ADC transmission");
 	}
 
-	if (i2c_adc_read(&reVal) == -1) {
-		PRINTF("Error reading from ADC");
-	}
-	else {
-		PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", temp_rx[0], temp_rx[1], temp_rx[2], temp_rx[3]);
-		int volts_upper;
-		int microvolts;
-		convert_adc(temp_rx, &volts_upper, &microvolts);
-		float vout = (float) volts_upper + ((float) microvolts)/100000;
-		float temp = (vout - 0.5)/0.01;
+    do {
+    	if (i2c_adc_read(temp_rx, 4, &reVal) == -1) {
+    		PRINTF("Error reading from ADC");
+    	}
+        SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    } while (temp_rx[3] & 0x80);  // Ready bit set?
 
-		int temp_upper = (int) temp;
-		int temp_lower = (int)((temp - temp_upper)*10);
-	    PRINTF("Temp: %d.%01d C\n", temp_upper, temp_lower);
+
+	PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", temp_rx[0], temp_rx[1], temp_rx[2], temp_rx[3]);
+	int volts_upper;
+	int microvolts;
+	convert_adc(temp_rx, &volts_upper, &microvolts);
+	int millivolts = volts_upper * 1000 + microvolts / 1000;
+	float temp = (millivolts - 500) / 10.0f;
+
+	int temp_upper = (int) temp;
+	int temp_lower = (int)((temp - temp_upper) * 10 + 0.5f);  // rounding to nearest digit
+
+	// Fix for negative temperatures
+	if (temp_lower < 0) {
+		temp_lower = -temp_lower;
 	}
+		PRINTF("Temp: %d.%01d C\n", temp_upper, temp_lower);
+
 }
 void i2c_run() {
 	I2C_MasterGetDefaultConfig(&masterConfig);
@@ -195,7 +209,26 @@ void i2c_run() {
 		PRINTF("Error during final transmission\n");
 	}
 
-	//read_dac();
-	read_temp();
+	while (1) {
+		read_temp();
+
+		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
+//		i2c_adc_read(&config_rx, 1, &reVal);
+//		while ((config_rx & (1<<7)) == 1) {
+//			i2c_adc_read(&config_rx, 1, &reVal);
+//			SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+//		}
+
+		read_dac();
+
+		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+//		i2c_adc_read(&config_rx, 1, &reVal);
+//		while ((config_rx & (1<<7)) == 1) {
+//			i2c_adc_read(&config_rx, 1, &reVal);
+//			SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+//		}
+
+	}
 
 }
