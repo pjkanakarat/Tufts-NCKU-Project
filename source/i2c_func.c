@@ -17,6 +17,7 @@ status_t reVal        = kStatus_Fail;
 uint8_t initial_reg_info[initial_reg_num][2] = {{0x03, 0xFF}, {0x09, 0xFF}, {0x16, 0x80}, {0x17, 0x80},
 												{0x18, 0x80}, {0x19, 0x80}, {0x20, 0x80}, {0x21, 0x80},
 												{0x22, 0x80}, {0x23, 0x80}, {0xb1, 0xac}, {0x03, 0x00}};
+uint8_t clockgen_reg_info[4][2] = {{ 0x002D, 0x58 }, { 0x002D, 0x2B }, { 0x002D, 0x1C }, { 0x002D, 0x10 }};
 
 uint8_t adc_addr = 0x68;
 uint8_t adc_tx = 0b10001100 | CHANNEL_1; //RDY = 1, Channel = 00 (Placeholder), Conversation = 0, Sample Rate = 11, PGA = 00
@@ -54,6 +55,42 @@ int i2c_write(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start,
     PRINTF("\r\n");
     return 0;
 }
+int i2c_write_delay(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start, uint32_t i_end) {
+    /* Send initial register config */
+    for (uint32_t i = i_start; i < i_end; i++) {
+    	PRINTF("Sending data to Reg 0x%x w/ Data 0x%x...", initial_reg_info[i][0], initial_reg_info [i][1]);
+		if (kStatus_Success == I2C_MasterStart(EXAMPLE_I2C_MASTER, I2C_MASTER_SLAVE_ADDR_7BIT, kI2C_Write))
+		{
+			*status = I2C_MasterWriteBlocking(EXAMPLE_I2C_MASTER, &initial_reg_info[i][0], 1, kI2C_TransferNoStopFlag);
+			if (*status != kStatus_Success)
+			{
+				PRINTF("Address write failed 0x%x - ", *status);
+				return -1;
+			}
+			*status = I2C_MasterWriteBlocking(EXAMPLE_I2C_MASTER, &initial_reg_info[i][1], 1, kI2C_TransferDefaultFlag);
+			if (*status != kStatus_Success)
+			{
+				PRINTF("Data write failed 0x%x - ", *status);
+				return -1;
+			}
+
+		}
+		else {
+			return -1;
+		}
+		PRINTF("Success\r\n");
+		SDK_DelayAtLeastUs(5000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+    }
+    PRINTF("\r\n");
+    return 0;
+}
+
+//5 MHz =   { 0x002D, 0x58 }
+//10 MHz = 	{ 0x002D, 0x2B }
+//15 MHz =  { 0x002D, 0x1C }
+//25 Mhz =  { 0x002D, 0x10 }
+//100 MHz = { 0x002D, 0x02 },
+//  		{ 0x002E, 0x80 }
 
 int i2c_write_main(status_t *status) {
     for (uint32_t i = 0U; i < SI5351A_REVB_REG_CONFIG_NUM_REGS; i++) {
@@ -151,7 +188,7 @@ void read_dac() {
 	int volts_upper;
 	int microvolts;
 	convert_adc(dac_rx, &volts_upper, &microvolts);
-	PRINTF("Voltage: %d.%06d V\n", volts_upper, microvolts);
+	PRINTF("Voltage: %d.%03d V\n", volts_upper, microvolts/1000);
 }
 
 void read_temp() {
@@ -210,24 +247,19 @@ void i2c_run() {
 	}
 
 	while (1) {
-		read_temp();
+//		read_temp();
+//
+//		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+//
+//		read_dac();
+//
+//		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 
-		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+		SDK_DelayAtLeastUs(10000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+		if (i2c_write_delay(clockgen_reg_info, &reVal, 0, 4) == -1) {
+			PRINTF("Error changing Clockgen Freq\n");
+		}
 
-//		i2c_adc_read(&config_rx, 1, &reVal);
-//		while ((config_rx & (1<<7)) == 1) {
-//			i2c_adc_read(&config_rx, 1, &reVal);
-//			SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-//		}
-
-		read_dac();
-
-		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-//		i2c_adc_read(&config_rx, 1, &reVal);
-//		while ((config_rx & (1<<7)) == 1) {
-//			i2c_adc_read(&config_rx, 1, &reVal);
-//			SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-//		}
 
 	}
 
