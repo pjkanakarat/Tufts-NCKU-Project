@@ -184,11 +184,11 @@ void read_dac() {
 		SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 	} while (dac_rx[3] & 0x80);
 
-	PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", dac_rx[0], dac_rx[1], dac_rx[2], dac_rx[3]);
+	//PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", dac_rx[0], dac_rx[1], dac_rx[2], dac_rx[3]);
 	int volts_upper;
 	int microvolts;
 	convert_adc(dac_rx, &volts_upper, &microvolts);
-	PRINTF("Voltage: %d.%03d V\n", volts_upper, microvolts/1000);
+	PRINTF("\r\nVoltage: %d.%03d V\n", volts_upper, microvolts/1000);
 }
 
 void read_temp() {
@@ -204,7 +204,7 @@ void read_temp() {
     } while (temp_rx[3] & 0x80);  // Ready bit set?
 
 
-	PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", temp_rx[0], temp_rx[1], temp_rx[2], temp_rx[3]);
+	//PRINTF("ADC Data: 0b%b %b %b Configuration: 0b%b\r\n", temp_rx[0], temp_rx[1], temp_rx[2], temp_rx[3]);
 	int volts_upper;
 	int microvolts;
 	convert_adc(temp_rx, &volts_upper, &microvolts);
@@ -218,7 +218,7 @@ void read_temp() {
 	if (temp_lower < 0) {
 		temp_lower = -temp_lower;
 	}
-		PRINTF("Temp: %d.%01d C\n", temp_upper, temp_lower);
+		PRINTF("\r\nTemp: %d.%01d C\n", temp_upper, temp_lower);
 
 }
 void i2c_run() {
@@ -247,18 +247,18 @@ void i2c_run() {
 	}
 
 	while (1) {
-//		read_temp();
-//
-//		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-//
-//		read_dac();
-//
-//		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+		read_temp();
 
-		SDK_DelayAtLeastUs(10000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
-		if (i2c_write_delay(clockgen_reg_info, &reVal, 0, 4) == -1) {
-			PRINTF("Error changing Clockgen Freq\n");
-		}
+		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
+		read_dac();
+
+		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
+//		SDK_DelayAtLeastUs(10000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+//		if (i2c_write_delay(clockgen_reg_info, &reVal, 0, 4) == -1) {
+//			PRINTF("Error changing Clockgen Freq\n");
+//		}
 
 
 	}

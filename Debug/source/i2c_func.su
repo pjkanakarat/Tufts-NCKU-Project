@@ -5,6 +5,6 @@ C:\Users\eestaff\Documents\MCUXpressoIDE_24.12.148\workspace\mcuFinalCode\driver
 ../source/i2c_func.c:123:5:i2c_adc_config	16	static
 ../source/i2c_func.c:145:5:i2c_adc_read	24	static
 ../source/i2c_func.c:159:6:convert_adc	40	static
-../source/i2c_func.c:175:6:read_dac	32	static
-../source/i2c_func.c:194:6:read_temp	48	static
+../source/i2c_func.c:175:6:read_dac	24	static
+../source/i2c_func.c:194:6:read_temp	40	static
 ../source/i2c_func.c:224:6:i2c_run	8	static
