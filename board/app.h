@@ -18,6 +18,11 @@
 #define EXAMPLE_SPI_MASTER_CLK_FREQ CLOCK_GetFlexCommClkFreq(3)
 #define EXAMPLE_SPI_SSEL            2
 #define EXAMPLE_SPI_SPOL            kSPI_SpolActiveAllLow
+
+#define APP_BOARD_TEST_LED_PORT 1U
+#define APP_BOARD_TEST_LED_PIN  10U
+#define APP_SW_PORT             BOARD_SW1_GPIO_PORT
+#define APP_SW_PIN              BOARD_SW1_GPIO_PIN
 /*${macro:end}*/
 
 /*******************************************************************************

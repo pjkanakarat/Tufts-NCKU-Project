@@ -6,6 +6,7 @@
  */
 
 #include "i2c_func.h"
+#include "mcp4822.h"
 #include "Si5351A-RevB-Registers3.h"
 
 
@@ -26,6 +27,9 @@ uint8_t temp_rx[4];
 uint8_t config_dac_rx;
 uint8_t config_temp_rx;
 uint8_t config_rx;
+
+uint8_t swState = APP_SW_STATE_RELEASED;
+int8_t filter   = -1;
 
 int i2c_write(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start, uint32_t i_end) {
     /* Send initial register config */
@@ -228,6 +232,13 @@ void i2c_run() {
 
 	GPIO_PinWrite(GPIO, 1, 16, 1);
 
+    gpio_pin_config_t sw_config = {
+        kGPIO_DigitalInput,
+        0, // Doesn't matter for input
+    };
+    GPIO_PinInit(GPIO, APP_SW_PORT, APP_SW_PIN, &sw_config);
+
+
 	/* Initialize the I2C master peripheral */
 	I2C_MasterInit(EXAMPLE_I2C_MASTER, &masterConfig, I2C_MASTER_CLOCK_FREQUENCY);
 
@@ -246,14 +257,23 @@ void i2c_run() {
 		PRINTF("Error during final transmission\n");
 	}
 
+	int loop_counter = 0;
+
+	static int voltage_step = 0;
+	uint16_t dac_values[] = {500, 1000, 1800, 2500};
+	int num_steps = sizeof(dac_values) / sizeof(dac_values[0]);
+
+    mcp4822_handle_t dac;
+    MCP4822_Init(&dac, SPI_MASTER, SPI_MASTER_CLK_FREQ, 400000);
+
 	while (1) {
-		read_temp();
+		//read_temp();
 
-		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+		//SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 
-		read_dac();
+		//read_dac();
 
-		SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+		//SDK_DelayAtLeastUs(1000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 
 //		SDK_DelayAtLeastUs(10000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
 //		if (i2c_write_delay(clockgen_reg_info, &reVal, 0, 4) == -1) {
@@ -261,6 +281,80 @@ void i2c_run() {
 //		}
 
 
+		uint32_t pin_state = GPIO_PinRead(GPIO, APP_SW_PORT, APP_SW_PIN);
+
+		switch (swState)
+		{
+		    case APP_SW_STATE_RELEASED:
+		        if (pin_state == 0)  // Button pressed
+		        {
+		            swState = APP_SW_STATE_CONFIRM_PRESSED;
+		            filter  = APP_SW_FILTER_PERIOD;
+		        }
+		        break;
+
+		    case APP_SW_STATE_CONFIRM_PRESSED:
+		        if (pin_state == 0)  // Button still pressed
+		        {
+		            if (filter == 0)
+		            {
+		            	PRINTF("\r\nToggled\r\n");
+		                uint16_t cmdA = MCP4822_BuildCommand(dac_values[voltage_step], 0, 0, 1);
+		                MCP4822_Write(&dac, cmdA);
+
+		                voltage_step = (voltage_step + 1) % num_steps;
+
+		                swState = APP_SW_STATE_PRESSED;
+		            }
+		            else
+		            {
+		                filter--;
+		            }
+		        }
+		        else
+		        {
+		            swState = APP_SW_STATE_RELEASED;
+		        }
+		        break;
+
+		    case APP_SW_STATE_PRESSED:
+		        if (pin_state == 1)  // Button released
+		        {
+		            swState = APP_SW_STATE_CONFIRM_RELEASED;
+		            filter  = APP_SW_FILTER_PERIOD;
+		        }
+		        break;
+
+		    case APP_SW_STATE_CONFIRM_RELEASED:
+		        if (pin_state == 1)  // Still released
+		        {
+		            if (filter == 0)
+		            {
+		                swState = APP_SW_STATE_RELEASED;
+		            }
+		            else
+		            {
+		                filter--;
+		            }
+		        }
+		        else
+		        {
+		            swState = APP_SW_STATE_PRESSED;
+		        }
+		        break;
+
+		    default:
+		        swState = APP_SW_STATE_RELEASED;
+		        break;
+		}
+		SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
+
+		loop_counter++;
+		if (loop_counter >= 100) {
+		    read_temp();
+		    read_dac();
+		    loop_counter = 0;
+		}
 	}
 
 }

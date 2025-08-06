@@ -13,12 +13,6 @@
 #include "mcp4822.h"
 #include "i2c_func.h"
 
-/*******************************************************************************
- * Definitions
- ******************************************************************************/
-#define SPI_MASTER          SPI5
-#define SPI_MASTER_CLK_FREQ 12000000U
-
 int main(void)
 {
     BOARD_InitHardware();

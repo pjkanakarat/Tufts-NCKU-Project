@@ -29,6 +29,15 @@
 #define CHANNEL_2					0b00100000 //Temp
 #define CHANNEL_3					0b01000000 //DAC
 
+#define APP_SW_STATE_RELEASED         0U
+#define APP_SW_STATE_CONFIRM_PRESSED  1U
+#define APP_SW_STATE_PRESSED          2U
+#define APP_SW_STATE_CONFIRM_RELEASED 3U
+#define APP_SW_FILTER_PERIOD          5
+
+#define SPI_MASTER          SPI5
+#define SPI_MASTER_CLK_FREQ 12000000U
+
 int i2c_write(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start, uint32_t i_end);
 int i2c_write_delay(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start, uint32_t i_end);
 int i2c_write_main(status_t *status);
