@@ -300,7 +300,7 @@
 								<option id="com.crt.advproject.link.gcc.lto.246791724" superClass="com.crt.advproject.link.gcc.lto"/>
 								<option id="com.crt.advproject.link.gcc.lto.optmization.level.854614866" superClass="com.crt.advproject.link.gcc.lto.optmization.level"/>
 								<option id="com.crt.advproject.link.manage.255960713" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.1108316377" superClass="com.crt.advproject.link.script" value="lpcxpresso51u68_lpc_i2c_polling_b2b_master_Debug.ld" valueType="string"/>
+								<option id="com.crt.advproject.link.script.1108316377" superClass="com.crt.advproject.link.script" value="mcuFinalCode_Debug.ld" valueType="string"/>
 								<option id="com.crt.advproject.link.scriptdir.688581481" superClass="com.crt.advproject.link.scriptdir"/>
 								<option id="com.crt.advproject.link.crpenable.548817261" superClass="com.crt.advproject.link.crpenable" value="true" valueType="boolean"/>
 								<option id="com.crt.advproject.link.flashconfigenable.1188044507" superClass="com.crt.advproject.link.flashconfigenable" value="true" valueType="boolean"/>
@@ -635,7 +635,7 @@
 								<option id="com.crt.advproject.link.gcc.lto.optmization.level.1012671223" superClass="com.crt.advproject.link.gcc.lto.optmization.level"/>
 								<option id="com.crt.advproject.link.fpu.550809674" superClass="com.crt.advproject.link.fpu"/>
 								<option id="com.crt.advproject.link.manage.1200786710" superClass="com.crt.advproject.link.manage" value="true" valueType="boolean"/>
-								<option id="com.crt.advproject.link.script.1380376853" superClass="com.crt.advproject.link.script" value="lpcxpresso51u68_lpc_i2c_polling_b2b_master_Release.ld" valueType="string"/>
+								<option id="com.crt.advproject.link.script.1380376853" superClass="com.crt.advproject.link.script" value="mcuFinalCode_Release.ld" valueType="string"/>
 								<option id="com.crt.advproject.link.scriptdir.1949940478" superClass="com.crt.advproject.link.scriptdir"/>
 								<option id="com.crt.advproject.link.crpenable.139757101" superClass="com.crt.advproject.link.crpenable" value="true" valueType="boolean"/>
 								<option id="com.crt.advproject.link.flashconfigenable.17928802" superClass="com.crt.advproject.link.flashconfigenable" value="true" valueType="boolean"/>
@@ -684,7 +684,7 @@
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="lpcxpresso51u68_lpc_i2c_polling_b2b_master.null.1191546604" name="lpcxpresso51u68_lpc_i2c_polling_b2b_master" projectType="com.crt.advproject.projecttype.exe"/>
+		<project id="lpcxpresso51u68_flexcomm_spi_polling_b2b_transfer_master.null.1524808424" name="lpcxpresso51u68_flexcomm_spi_polling_b2b_transfer_master" projectType="com.crt.advproject.projecttype.exe"/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="com.nxp.mcuxpresso.core.datamodels">
@@ -726,16 +726,16 @@
 	<storageModule moduleId="openCmsis"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.1130169981;com.crt.advproject.config.exe.release.1130169981.;com.crt.advproject.gcc.exe.release.1820014464;com.crt.advproject.compiler.input.125075282">
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.1241455039;com.crt.advproject.config.exe.debug.1241455039.;com.crt.advproject.gas.exe.debug.207924342;com.crt.advproject.assembler.input.1823040152">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.1406061886;com.crt.advproject.config.exe.debug.1406061886.;com.crt.advproject.gcc.exe.debug.1846198102;com.crt.advproject.compiler.input.1625373402">
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.1378497855;com.crt.advproject.config.exe.release.1378497855.;com.crt.advproject.gcc.exe.release.1161371039;com.crt.advproject.compiler.input.816420244">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.1406061886;com.crt.advproject.config.exe.debug.1406061886.;com.crt.advproject.gas.exe.debug.1897754815;com.crt.advproject.assembler.input.1873635175">
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.1378497855;com.crt.advproject.config.exe.release.1378497855.;com.crt.advproject.gas.exe.release.1678478917;com.crt.advproject.assembler.input.1350534934">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.release.1130169981;com.crt.advproject.config.exe.release.1130169981.;com.crt.advproject.gas.exe.release.361354775;com.crt.advproject.assembler.input.743235180">
+		<scannerConfigBuildInfo instanceId="com.crt.advproject.config.exe.debug.1241455039;com.crt.advproject.config.exe.debug.1241455039.;com.crt.advproject.gcc.exe.debug.665253434;com.crt.advproject.compiler.input.1166290325">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>

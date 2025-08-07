@@ -31,7 +31,7 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := lpcxpresso51u68_lpc_i2c_polling_b2b_master
+BUILD_ARTIFACT_NAME := mcuFinalCode
 BUILD_ARTIFACT_EXTENSION := axf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
@@ -43,24 +43,24 @@ all:
 	+@$(MAKE) --no-print-directory main-build && $(MAKE) --no-print-directory post-build
 
 # Main-build Target
-main-build: lpcxpresso51u68_lpc_i2c_polling_b2b_master.axf
+main-build: mcuFinalCode.axf
 
 # Tool invocations
-lpcxpresso51u68_lpc_i2c_polling_b2b_master.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
+mcuFinalCode.axf: $(OBJS) $(USER_OBJS) makefile $(OPTIONAL_TOOL_DEPS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -Xlinker -no-warn-rwx-segments -Xlinker -Map="lpcxpresso51u68_lpc_i2c_polling_b2b_master.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m0plus -mthumb -T lpcxpresso51u68_lpc_i2c_polling_b2b_master_Debug.ld -o "lpcxpresso51u68_lpc_i2c_polling_b2b_master.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -Xlinker -no-warn-rwx-segments -Xlinker -Map="mcuFinalCode.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m0plus -mthumb -T mcuFinalCode_Debug.ld -o "mcuFinalCode.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) lpcxpresso51u68_lpc_i2c_polling_b2b_master.axf
+	-$(RM) mcuFinalCode.axf
 	-@echo ' '
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "lpcxpresso51u68_lpc_i2c_polling_b2b_master.axf"; # arm-none-eabi-objcopy -v -O binary "lpcxpresso51u68_lpc_i2c_polling_b2b_master.axf" "lpcxpresso51u68_lpc_i2c_polling_b2b_master.bin" ; # checksum -p LPC51U68 -d "lpcxpresso51u68_lpc_i2c_polling_b2b_master.bin";
+	-arm-none-eabi-size "mcuFinalCode.axf"; # arm-none-eabi-objcopy -v -O binary "mcuFinalCode.axf" "mcuFinalCode.bin" ; # checksum -p LPC51U68 -d "mcuFinalCode.bin";
 	-@echo ' '
 
 .PHONY: all clean dependents main-build post-build

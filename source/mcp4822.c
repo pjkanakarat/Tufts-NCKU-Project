@@ -47,7 +47,7 @@ uint16_t MCP4822_BuildCommand(uint16_t data, uint8_t channel, uint8_t gain, uint
 
 void MCP4822_Write(mcp4822_handle_t *handle, uint16_t command)
 {
-    PRINTF("SPI Command: 0x%04X\n\r", command);
+    //PRINTF("SPI Command: 0x%04X\n\r", command);
 
     uint8_t *txBuf = (uint8_t *)&command;
 
