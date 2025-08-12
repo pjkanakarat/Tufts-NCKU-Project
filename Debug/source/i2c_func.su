@@ -8,6 +8,6 @@ C:\Users\eestaff\Documents\MCUXpressoIDE_24.12.148\workspace\mcuFinalCode\driver
 ../source/i2c_func.c:168:6:convert_adc	40	static
 ../source/i2c_func.c:184:6:read_dac	24	static
 ../source/i2c_func.c:212:6:read_temp	40	static
-../source/i2c_func.c:244:6:dac_switch_func	64	static
-../source/i2c_func.c:322:6:cgn_switch_func	16	static
-../source/i2c_func.c:397:6:i2c_run	16	static
+../source/i2c_func.c:244:6:dac_switch_func	72	static
+../source/i2c_func.c:320:6:cgn_switch_func	16	static
+../source/i2c_func.c:405:6:i2c_run	16	static

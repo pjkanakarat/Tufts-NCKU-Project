@@ -20,7 +20,7 @@ uint8_t initial_reg_info[initial_reg_num][2] = {{0x03, 0xFF}, {0x09, 0xFF}, {0x1
 												{0x22, 0x80}, {0x23, 0x80}, {0xb1, 0xac}, {0x03, 0x00}};
 
 int num_steps = 4;
-uint8_t clockgen_reg_info[4][2] = {{ 0x002D, 0x58 }, { 0x002D, 0x2B }, { 0x002D, 0x1C }, { 0x002D, 0x10 }};
+uint8_t clockgen_reg_info[4][2] = {{ 0x002D, 0x58 }, { 0x002D, 0x2B }, { 0x002D, 0x1C }, { 0x002D, 0x14 }};
 uint16_t dac_values[4] = {500, 1000, 1800, 2500};
 
 uint8_t adc_addr = 0x68;
@@ -67,7 +67,7 @@ int i2c_write(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start,
 int i2c_write_undebug(uint8_t initial_reg_info[][2], status_t *status, uint32_t i_start, uint32_t i_end) {
     /* Send initial register config */
     for (uint32_t i = i_start; i < i_end; i++) {
-    	//PRINTF("Sending data to Reg 0x%x w/ Data 0x%x...", initial_reg_info[i][0], initial_reg_info [i][1]);
+    	PRINTF("Sending data to Reg 0x%x w/ Data 0x%x...", initial_reg_info[i][0], initial_reg_info [i][1]);
 		if (kStatus_Success == I2C_MasterStart(EXAMPLE_I2C_MASTER, I2C_MASTER_SLAVE_ADDR_7BIT, kI2C_Write))
 		{
 			*status = I2C_MasterWriteBlocking(EXAMPLE_I2C_MASTER, &initial_reg_info[i][0], 1, kI2C_TransferNoStopFlag);
@@ -87,7 +87,7 @@ int i2c_write_undebug(uint8_t initial_reg_info[][2], status_t *status, uint32_t 
 		else {
 			return -1;
 		}
-		//PRINTF("Success\r\n");
+		PRINTF("Success\r\n");
 		//SDK_DelayAtLeastUs(5000000, CLOCK_GetFreq(kCLOCK_CoreSysClk));
     }
     PRINTF("\r\n");
@@ -97,6 +97,7 @@ int i2c_write_undebug(uint8_t initial_reg_info[][2], status_t *status, uint32_t 
 //5 MHz =   { 0x002D, 0x58 }
 //10 MHz = 	{ 0x002D, 0x2B }
 //15 MHz =  { 0x002D, 0x1C }
+//20 MHz =  { 0x002D, 0x14 }
 //25 Mhz =  { 0x002D, 0x10 }
 //100 MHz = { 0x002D, 0x02 },
 //  		{ 0x002E, 0x80 }
@@ -266,11 +267,9 @@ void dac_switch_func() {
 	            {
 	            	PRINTF("\r\nDAC Voltage Changed\r\n");
 	                uint16_t cmdA = MCP4822_BuildCommand(dac_values[step], 0, 0, 1);
+	                uint16_t cmdB = MCP4822_BuildCommand(dac_values[step], 1, 0, 1);
 	                MCP4822_Write(&dac, cmdA);
-
-//					if (i2c_write(clockgen_reg_info, &reVal, step, step+1) == -1) {
-//						PRINTF("Error changing Clockgen Freq\n");
-//					}
+	                MCP4822_Write(&dac, cmdB);
 
 	                step = (step + 1) % num_steps;
 
@@ -341,9 +340,19 @@ void cgn_switch_func() {
 	            	PRINTF("\r\nClockgen Freq Changed\r\n");
 //	                uint16_t cmdA = MCP4822_BuildCommand(dac_values[step], 0, 0, 1);
 //	                MCP4822_Write(&dac, cmdA);
+
+	            	/* Send initial register config */
+	            	if (i2c_write(initial_reg_info, &reVal, 0, initial_reg_num-2) == -1) {
+	            		PRINTF("Error during initial transmission\n");
+	            	}
 					if (i2c_write_undebug(clockgen_reg_info, &reVal, step, step+1) == -1) {
 						PRINTF("Error changing Clockgen Freq\n");
 					}
+					/* Send final register config */
+					if (i2c_write(initial_reg_info, &reVal, initial_reg_num-2, initial_reg_num) == -1) {
+						PRINTF("Error during final transmission\n");
+					}
+
 
 
 	                step = (step + 1) % num_steps;
