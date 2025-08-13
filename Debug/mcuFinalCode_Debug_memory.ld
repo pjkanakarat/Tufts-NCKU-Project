@@ -6,7 +6,7 @@
  * Generated linker script file for LPC51U68
  * Created from memory.ldt by FMCreateLinkMemory
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v24.12 [Build 148] [2025-01-10] on Aug 12, 2025, 3:04:20 PM
+ * MCUXpresso IDE v24.12 [Build 148] [2025-01-10] on Aug 13, 2025, 10:14:29 AM
  */
 
 MEMORY
